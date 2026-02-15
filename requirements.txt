@@ -1,0 +1,10 @@
+# MindSpore - Instalar según tu hardware (solo uno):
+# CPU:
+mindspore>=2.0.0
+# GPU (CUDA 11.x): pip install mindspore-gpu
+# Ver: https://www.mindspore.cn/install
+
+numpy>=1.21.0
+Pillow>=9.0.0
+scikit-learn>=1.0.0
+tqdm>=4.60.0

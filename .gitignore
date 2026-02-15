@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Entorno virtual
+venv/
+env/
+ENV/
+.venv
+
+# Checkpoints y modelos entrenados
+checkpoints/
+*.ckpt
+*.mindir
+*.onnx
+
+# Datos (imágenes del dataset)
+data/train/
+data/val/
+data/*.jpg
+data/*.jpeg
+data/*.png
+data/*.webp
+data/*.bmp
+
+# Resultados
+results/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
