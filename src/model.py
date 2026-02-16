@@ -29,25 +29,34 @@ class ConvBlock(nn.Cell):
 class FaceEmbeddingNet(nn.Cell):
     """
     Red que extrae vectores de embedding (128-d) a partir de caras.
+    Arquitectura mejorada con 6 bloques convolucionales para mayor capacidad.
     Entrada: (B, 3, 112, 112), Salida: (B, embedding_dim).
     """
 
     def __init__(self, embedding_dim=128):
         super().__init__()
         self.embedding_dim = embedding_dim
+        # Arquitectura más profunda: 6 bloques convolucionales
         self.features = nn.SequentialCell(
-            ConvBlock(3, 32),   # -> 56x56
-            ConvBlock(32, 64),  # -> 28x28
-            ConvBlock(64, 128), # -> 14x14
-            ConvBlock(128, 256), # -> 7x7
+            ConvBlock(3, 32),     # -> 56x56
+            ConvBlock(32, 64),    # -> 28x28
+            ConvBlock(64, 128),   # -> 14x14
+            ConvBlock(128, 256),  # -> 7x7
+            ConvBlock(256, 512),  # -> 3x3
+            ConvBlock(512, 512),  # -> 1x1
         )
         self.flatten = nn.Flatten()
-        self.fc = nn.Dense(256 * 7 * 7, embedding_dim, weight_init=Normal(0.02), bias_init="zeros")
+        # Dropout para regularización (reduce overfitting)
+        self.dropout = nn.Dropout(p=0.5)
+        # Capa final de embedding (512 * 1 * 1 = 512)
+        self.fc = nn.Dense(512 * 1 * 1, embedding_dim, weight_init=Normal(0.02), bias_init="zeros")
 
     def construct(self, x):
         x = self.features(x)
         x = self.flatten(x)
+        x = self.dropout(x)
         x = self.fc(x)
+        # Normalización L2 para embeddings unitarios (mejora similitud coseno)
         x = ms.ops.L2Normalize(axis=1)(x)
         return x
 

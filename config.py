@@ -20,11 +20,18 @@ EMBEDDING_DIM = 128
 
 # Entrenamiento
 BATCH_SIZE = 4  # Reducido para datasets pequeños (ajustar a 32 con más datos)
-EPOCHS = 30
-LEARNING_RATE = 1e-3
+EPOCHS = 100  # Aumentado para mejor convergencia con Triplet Loss
+LEARNING_RATE = 5e-4  # Reducido para entrenamiento más estable
 
 # Verificación (umbral de similitud coseno para considerar "misma persona")
-VERIFICATION_THRESHOLD = 0.5
+# ALTA SEGURIDAD: Prioriza rechazar impostores sobre aceptar a todos
+VERIFICATION_THRESHOLD = 0.75  # Modo de alta seguridad (recomendado)
+STRICT_VERIFICATION_THRESHOLD = 0.85  # Modo ultra-seguro (máxima seguridad)
+
+# Triplet Loss
+TRIPLET_MARGIN = 0.3  # Margen mínimo entre embeddings de diferentes personas
+TRIPLET_WEIGHT = 1.0  # Peso de triplet loss en entrenamiento combinado
+CE_WEIGHT = 0.5  # Peso de classification loss
 
 # Semilla para reproducibilidad
 SEED = 42

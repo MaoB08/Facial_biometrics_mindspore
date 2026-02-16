@@ -11,10 +11,25 @@ from config import TRAIN_DIR, VAL_DIR, IMAGE_SIZE, BATCH_SIZE
 
 
 def get_train_transforms():
-    """Transformaciones para entrenamiento (imagen ya decodificada con decode=True)."""
+    """
+    Transformaciones robustas para entrenamiento.
+    Incluye augmentación para mejorar robustez ante variaciones de:
+    - Iluminación (brillo/contraste)
+    - Ángulos (rotación, flip)
+    - Calidad de imagen (blur)
+    """
     return [
         vision.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+        # Flip horizontal aleatorio (50% probabilidad)
         vision.RandomHorizontalFlip(0.5),
+        # Rotación aleatoria (±15 grados)
+        vision.RandomRotation(degrees=15),
+        # Ajuste de brillo y contraste (±20%)
+        vision.RandomColorAdjust(brightness=0.2, contrast=0.2),
+        # Recorte aleatorio con padding (simula diferentes encuadres)
+        vision.RandomResizedCrop(size=(IMAGE_SIZE, IMAGE_SIZE), scale=(0.8, 1.0)),
+        # Gaussian blur ocasional (simula desenfoque)
+        vision.RandomApply([vision.GaussianBlur(kernel_size=3)], prob=0.3),
         vision.HWC2CHW(),
         vision.Normalize(
             mean=[0.485, 0.456, 0.406],

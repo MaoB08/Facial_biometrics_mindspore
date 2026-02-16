@@ -66,14 +66,35 @@ def get_embedding(model, image_path):
     return emb.asnumpy().flatten()
 
 
-def verify_pair(model, path_a, path_b, threshold=0.5):
+def verify_pair(model, path_a, path_b, threshold=0.75):
     """
     Verificación 1:1: ¿son la misma persona?
-    Devuelve (es_misma_persona: bool, similitud: float).
+    
+    Args:
+        model: Modelo de embeddings cargado
+        path_a: Ruta a primera imagen
+        path_b: Ruta a segunda imagen
+        threshold: Umbral de similitud (default: 0.75 para alta seguridad)
+        
+    Returns:
+        Tupla (es_misma_persona: bool, similitud: float, confianza: str)
     """
     emb_a = get_embedding(model, path_a)
     emb_b = get_embedding(model, path_b)
+    # Similitud coseno (embeddings ya están normalizados L2)
     sim = np.dot(emb_a, emb_b) / (np.linalg.norm(emb_a) * np.linalg.norm(emb_b) + 1e-8)
-    return bool(sim >= threshold), float(sim)
+    
+    # Determinar nivel de confianza
+    if sim < 0.5:
+        confidence = "RECHAZADO - Definitivamente NO es la persona"
+    elif sim < 0.75:
+        confidence = "RECHAZADO - Dudoso (rechazado por seguridad)"
+    elif sim < 0.85:
+        confidence = "ACEPTADO - Probable coincidencia"
+    else:
+        confidence = "ACEPTADO - Alta confianza"
+    
+    is_same = bool(sim >= threshold)
+    return is_same, float(sim), confidence
 
 
