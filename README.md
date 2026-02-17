@@ -1,6 +1,6 @@
 # Biometría facial con MindSpore (Huawei)
 
-Modelo de **reconocimiento facial** con **MindSpore**, ejecutado **100% en local**: entrenamiento, validación e inferencia en tu máquina.
+Modelo de **reconocimiento facial** con **MindSpore**, ejecutado **100% en local**: entrenamiento, validación e inferencia en local.
 
 ---
 
